@@ -26,7 +26,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/auth/**").permitAll() // Rota pública
+                           .requestMatchers("/auth/**").permitAll() // Rota pública
                         .anyRequest().authenticated()            // Protege TODO o resto (ex: /produtos)
                 )
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // Adiciona filtro JWT

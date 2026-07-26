@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "usuarios") //ROLE
 public class Usuario implements UserDetails {
 
     @Id
@@ -26,7 +26,7 @@ public class Usuario implements UserDetails {
     private String senha;
 
     @Enumerated(EnumType.STRING)
-    private Role role; // Ou Role, de acordo com o nome do seu Enum
+    private Role role;
 
     public Usuario() {
     }
