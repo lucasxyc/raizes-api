@@ -26,10 +26,15 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                           .requestMatchers("/auth/**").permitAll() // Rota pública
-                        .anyRequest().authenticated()            // Protege TODO o resto (ex: /produtos)
+                        .requestMatchers("/auth/**").permitAll() // Rotas de autenticação
+                        .requestMatchers(
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**",
+                                "/swagger-ui.html"
+                        ).permitAll() // Endpoints do Swagger liberados
+                        .anyRequest().authenticated() // Protege todo o resto
                 )
-                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class) // Adiciona filtro JWT
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
@@ -42,4 +47,5 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
 }
