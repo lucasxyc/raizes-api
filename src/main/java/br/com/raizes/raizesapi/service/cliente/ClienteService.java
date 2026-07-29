@@ -31,10 +31,10 @@ public class ClienteService {
 
     public ClienteResponse criar(ClienteRequest request) {
         Cliente cliente = new Cliente();
-        cliente.setNome(request.getNome());
-        cliente.setEmail(request.getEmail());
-        cliente.setTelefone(request.getTelefone());
-        cliente.setConsentimentoLGPD(request.getConsentimentoLGPD());
+        cliente.setNome(request.nome());
+        cliente.setEmail(request.email());
+        cliente.setTelefone(request.telefone());
+        cliente.setConsentimentoLGPD(request.consentimentoLGPD());
 
         Cliente clienteSalvo = repository.save(cliente);
         return converterParaResponse(clienteSalvo);
@@ -44,10 +44,10 @@ public class ClienteService {
         Cliente cliente = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
 
-        cliente.setNome(request.getNome());
-        cliente.setEmail(request.getEmail());
-        cliente.setTelefone(request.getTelefone());
-        cliente.setConsentimentoLGPD(request.getConsentimentoLGPD());
+        cliente.setNome(request.nome());
+        cliente.setEmail(request.email());
+        cliente.setTelefone(request.telefone());
+        cliente.setConsentimentoLGPD(request.consentimentoLGPD());
 
         Cliente clienteAtualizado = repository.save(cliente);
         return converterParaResponse(clienteAtualizado);
@@ -60,16 +60,16 @@ public class ClienteService {
         repository.deleteById(id);
     }
 
-    // Método auxiliar (evitar repetição de código)
+    // Método auxiliar
     private ClienteResponse converterParaResponse(Cliente cliente) {
-        ClienteResponse response = new ClienteResponse();
-        response.setId(cliente.getId());
-        response.setNome(cliente.getNome());
-        response.setEmail(cliente.getEmail());
-        response.setTelefone(cliente.getTelefone());
-        response.setPontos(cliente.getPontos());
-        response.setConsentimentoLGPD(cliente.getConsentimentoLGPD());
-        return response;
+        return new ClienteResponse(
+                cliente.getId(),
+                cliente.getNome(),
+                cliente.getEmail(),
+                cliente.getTelefone(),
+                cliente.getPontos(),
+                cliente.getConsentimentoLGPD()
+        );
     }
 
 }

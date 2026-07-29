@@ -23,7 +23,7 @@ public class JwtFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Autowired
-    private UserDetailsService userDetailsService; // Ou o seu repository/service de usuário
+    private UserDetailsService userDetailsService; //
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
@@ -42,8 +42,6 @@ public class JwtFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
 
-        // 1. SE NÃO HOUVER TOKEN (Rotas públicas como Swagger/Auth):
-        // Apenas repassa a requisição sem autenticar e PARA a execução do filtro aqui.
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -58,7 +56,7 @@ public class JwtFilter extends OncePerRequestFilter {
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 var userDetails = this.userDetailsService.loadUserByUsername(userEmail);
 
-                // Como o seu JwtService exige um objeto Usuario no isTokenValid:
+
                 if (jwtService.isTokenValid(jwt, (Usuario) userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                             userDetails,
