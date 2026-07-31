@@ -1,6 +1,7 @@
-package br.com.raizes.raizesapi.security;
+package br.com.raizes.raizesapi.security.filter;
 
 import br.com.raizes.raizesapi.entity.Usuario;
+import br.com.raizes.raizesapi.security.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

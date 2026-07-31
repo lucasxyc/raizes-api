@@ -1,4 +1,4 @@
-package br.com.raizes.raizesapi.security;
+package br.com.raizes.raizesapi.security.service;
 
 import br.com.raizes.raizesapi.repository.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;

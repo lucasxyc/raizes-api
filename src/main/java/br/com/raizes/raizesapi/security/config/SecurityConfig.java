@@ -1,5 +1,6 @@
-package br.com.raizes.raizesapi.security;
+package br.com.raizes.raizesapi.security.config;
 
+import br.com.raizes.raizesapi.security.filter.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
