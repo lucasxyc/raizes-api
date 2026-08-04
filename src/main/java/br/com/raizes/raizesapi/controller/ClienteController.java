@@ -1,8 +1,8 @@
-package br.com.raizes.raizesapi.controller.cliente;
+package br.com.raizes.raizesapi.controller;
 
 import br.com.raizes.raizesapi.dto.cliente.ClienteRequest;
 import br.com.raizes.raizesapi.dto.cliente.ClienteResponse;
-import br.com.raizes.raizesapi.service.cliente.ClienteService;
+import br.com.raizes.raizesapi.service.ClienteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

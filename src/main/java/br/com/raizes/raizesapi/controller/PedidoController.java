@@ -1,9 +1,9 @@
-package br.com.raizes.raizesapi.controller.pedido;
+package br.com.raizes.raizesapi.controller;
 
 import br.com.raizes.raizesapi.dto.pedido.PedidoRequest;
 import br.com.raizes.raizesapi.dto.pedido.PedidoResponse;
 import br.com.raizes.raizesapi.enums.StatusPedido;
-import br.com.raizes.raizesapi.service.pedido.PedidoService;
+import br.com.raizes.raizesapi.service.PedidoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

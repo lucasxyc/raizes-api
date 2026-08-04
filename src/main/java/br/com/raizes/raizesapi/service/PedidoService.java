@@ -1,10 +1,9 @@
-package br.com.raizes.raizesapi.service.pedido;
+package br.com.raizes.raizesapi.service;
 
 import br.com.raizes.raizesapi.dto.pedido.*;
 import br.com.raizes.raizesapi.entity.*;
 import br.com.raizes.raizesapi.enums.StatusPedido;
 import br.com.raizes.raizesapi.repository.*;
-import br.com.raizes.raizesapi.service.estoque.EstoqueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

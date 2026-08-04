@@ -1,10 +1,9 @@
-package br.com.raizes.raizesapi.service.auth;
+package br.com.raizes.raizesapi.service;
 
 import br.com.raizes.raizesapi.dto.auth.LoginRequest;
 import br.com.raizes.raizesapi.dto.auth.RegisterRequest;
 import br.com.raizes.raizesapi.entity.Usuario;
 import br.com.raizes.raizesapi.repository.UsuarioRepository;
-import br.com.raizes.raizesapi.security.service.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

@@ -1,7 +1,7 @@
-package br.com.raizes.raizesapi.controller.produto;
+package br.com.raizes.raizesapi.controller;
 
 import br.com.raizes.raizesapi.entity.Produto;
-import br.com.raizes.raizesapi.service.produto.ProdutoService;
+import br.com.raizes.raizesapi.service.ProdutoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

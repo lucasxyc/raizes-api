@@ -1,4 +1,4 @@
-package br.com.raizes.raizesapi.service.estoque;
+package br.com.raizes.raizesapi.service;
 
 import br.com.raizes.raizesapi.dto.estoque.EstoqueRequest;
 import br.com.raizes.raizesapi.dto.estoque.EstoqueResponse;

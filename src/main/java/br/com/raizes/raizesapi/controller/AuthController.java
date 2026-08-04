@@ -1,9 +1,9 @@
-package br.com.raizes.raizesapi.controller.auth;
+package br.com.raizes.raizesapi.controller;
 
 import br.com.raizes.raizesapi.dto.auth.LoginRequest;
 import br.com.raizes.raizesapi.dto.auth.LoginResponse;
 import br.com.raizes.raizesapi.dto.auth.RegisterRequest;
-import br.com.raizes.raizesapi.service.auth.AuthService;
+import br.com.raizes.raizesapi.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

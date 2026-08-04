@@ -1,4 +1,4 @@
-package br.com.raizes.raizesapi.service.produto;
+package br.com.raizes.raizesapi.service;
 
 import br.com.raizes.raizesapi.entity.Produto;
 import br.com.raizes.raizesapi.repository.ProdutoRepository;

@@ -1,8 +1,8 @@
-package br.com.raizes.raizesapi.controller.estoque;
+package br.com.raizes.raizesapi.controller;
 
 import br.com.raizes.raizesapi.dto.estoque.EstoqueRequest;
 import br.com.raizes.raizesapi.dto.estoque.EstoqueResponse;
-import br.com.raizes.raizesapi.service.estoque.EstoqueService;
+import br.com.raizes.raizesapi.service.EstoqueService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

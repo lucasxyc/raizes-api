@@ -1,4 +1,4 @@
-package br.com.raizes.raizesapi.service.cliente;
+package br.com.raizes.raizesapi.service;
 
 import br.com.raizes.raizesapi.dto.cliente.ClienteRequest;
 import br.com.raizes.raizesapi.dto.cliente.ClienteResponse;
