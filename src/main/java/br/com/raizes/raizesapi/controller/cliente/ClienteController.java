@@ -17,31 +17,31 @@ public class ClienteController {
 
     private final ClienteService service;
 
-    // Requisição: GET /clientes
+    // GET /clientes -> Lista todos os clientes cadastrados com suas informações básicas
     @GetMapping
     public ResponseEntity<List<ClienteResponse>> listar() {
         return ResponseEntity.ok(service.listar());
     }
 
-    // Requisição: GET /clientes/{id}
+    // GET /clientes/{id} -> Busca os detalhes e o saldo de pontos de um cliente específico pelo ID
     @GetMapping("/{id}")
     public ResponseEntity<ClienteResponse> buscarPorId(@PathVariable Long id) {
         return ResponseEntity.ok(service.buscarPorId(id));
     }
 
-    // Requisição: POST /clientes
+    // POST /clientes -> Cadastra um novo cliente coletando o consentimento explícito da LGPD
     @PostMapping
     public ResponseEntity<ClienteResponse> criar(@RequestBody ClienteRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.criar(request));
     }
 
-    // Requisição: PUT /clientes/{id}
+    // PUT /clientes/{id} -> Atualiza os dados de contato ou o consentimento de um cliente existente
     @PutMapping("/{id}")
     public ResponseEntity<ClienteResponse> atualizar(@PathVariable Long id, @RequestBody ClienteRequest request) {
         return ResponseEntity.ok(service.atualizar(id, request));
     }
 
-    // Requisição: DELETE /clientes/{id}
+    // DELETE /clientes/{id} -> Remove permanentemente o registro do cliente do banco de dados
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletar(id);
