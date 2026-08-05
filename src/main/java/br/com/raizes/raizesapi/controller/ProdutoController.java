@@ -2,22 +2,25 @@ package br.com.raizes.raizesapi.controller;
 
 import br.com.raizes.raizesapi.entity.Produto;
 import br.com.raizes.raizesapi.service.ProdutoService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
 @RequestMapping("/produtos")
-@RequiredArgsConstructor // Injeta o service pelo construtor automaticamente mantendo o padrão do projeto
+@RequiredArgsConstructor
 public class ProdutoController {
 
     private final ProdutoService produtoService;
 
     // GET /produtos -> Lista todos os produtos cadastrados no cardápio geral
     @GetMapping
+    @Operation(summary = "Listar cardápio", description = "Retorna todos os itens gastronômicos e bebidas ativos e cadastrados no catálogo")
     public ResponseEntity<List<Produto>> listarTodos() {
         List<Produto> produtos = produtoService.listarTodos();
         return ResponseEntity.ok(produtos);
@@ -25,6 +28,7 @@ public class ProdutoController {
 
     // GET /produtos/{id} -> Busca as informações detalhadas e o preço de um produto pelo ID
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar produto por ID", description = "Recupera os detalhes cadastrais e o valor em precificação técnica de um produto específico")
     public ResponseEntity<Produto> buscarPorId(@PathVariable Long id) {
         Produto produto = produtoService.buscarPorId(id);
         return ResponseEntity.ok(produto);
@@ -32,20 +36,23 @@ public class ProdutoController {
 
     // POST /produtos -> Cadastra um novo produto informando nome, descrição e preço básico
     @PostMapping
-    public ResponseEntity<Produto> salvar(@RequestBody Produto produto) {
+    @Operation(summary = "Cadastrar produto", description = "Insere uma nova opção de item ou insumo no catálogo de produtos geral")
+    public ResponseEntity<Produto> salvar(@Valid @RequestBody Produto produto) {
         Produto produtoSalvo = produtoService.salvar(produto);
         return ResponseEntity.status(HttpStatus.CREATED).body(produtoSalvo);
     }
 
     // PUT /produtos/{id} -> Atualiza o preço ou os dados cadastrais de um produto existente
     @PutMapping("/{id}")
-    public ResponseEntity<Produto> atualizar(@PathVariable Long id, @RequestBody Produto produto) {
+    @Operation(summary = "Atualizar dados do produto", description = "Atualiza de forma integral as propriedades cadastrais ou precificação de um produto")
+    public ResponseEntity<Produto> atualizar(@PathVariable Long id, @Valid @RequestBody Produto produto) {
         Produto produtoAtualizado = produtoService.atualizar(id, produto);
         return ResponseEntity.ok(produtoAtualizado);
     }
 
     // DELETE /produtos/{id} -> Remove permanentemente o registro do produto do catálogo
     @DeleteMapping("/{id}")
+    @Operation(summary = "Remover produto", description = "Exclui em definitivo um produto do catálogo físico do banco relacional")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         produtoService.deletar(id);
         return ResponseEntity.noContent().build();
