@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/produtos")
 @RequiredArgsConstructor
+@Tag(name = "Produtos", description = "Endpoints para gerenciamento do catálogo e precificação de itens")
 public class ProdutoController {
 
     private final ProdutoService produtoService;

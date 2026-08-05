@@ -15,9 +15,9 @@ public class OpenApiConfig {
 
                 .info(
                         new Info()
-                                .title("Raízes do Nordeste API")
+                                .title("API - TRABALHO FINAL UNINTER")
                                 .version("1.0")
-                                .description("Projeto Multidisciplinar Backend")
+                                .description("Projeto Multidisciplinar Backend / ELETIVA IV")
                 );
     }
 
