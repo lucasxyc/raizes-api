@@ -131,5 +131,15 @@ public class PedidoService {
                 pedido.getCanalPedido(),
                 itensResponse
         );
+
+
     }
+
+    public List<PedidoResponse> listarPorCanal(br.com.raizes.raizesapi.enums.CanalPedido canalPedido) {
+        return repository.findByCanalPedido(canalPedido)
+                .stream()
+                .map(this::converterParaResponse)
+                .collect(Collectors.toList());
+    }
+
 }

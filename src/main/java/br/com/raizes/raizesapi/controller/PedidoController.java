@@ -2,6 +2,7 @@ package br.com.raizes.raizesapi.controller;
 
 import br.com.raizes.raizesapi.dto.pedido.PedidoRequest;
 import br.com.raizes.raizesapi.dto.pedido.PedidoResponse;
+import br.com.raizes.raizesapi.enums.CanalPedido;
 import br.com.raizes.raizesapi.enums.StatusPedido;
 import br.com.raizes.raizesapi.service.PedidoService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,10 +29,15 @@ public class PedidoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(service.criarPedido(request));
     }
 
-    // GET /pedidos -> Lista todos os pedidos cadastrados no sistema
+    // GET /pedidos -> Lista todos os pedidos cadastrados no sistema ou filtra opcionalmente por canal de venda
     @GetMapping
-    @Operation(summary = "Listar todos os pedidos", description = "Retorna uma listagem completa de todos os pedidos efetuados no sistema")
-    public ResponseEntity<List<PedidoResponse>> listar() {
+    @Operation(summary = "Listar todos os pedidos", description = "Retorna uma listagem completa de todos os pedidos efetuados ou filtrados por canal de venda (ex: ?canalPedido=TOTEM)")
+    public ResponseEntity<List<PedidoResponse>> listar(
+            @RequestParam(required = false) CanalPedido canalPedido
+    ) {
+        if (canalPedido != null) {
+            return ResponseEntity.ok(service.listarPorCanal(canalPedido));
+        }
         return ResponseEntity.ok(service.listar());
     }
 
