@@ -29,6 +29,10 @@ public class Pedido {
     @JoinColumn(name = "cliente_id", nullable = false)
     private Cliente cliente;
 
+    @ManyToOne
+    @JoinColumn(name = "unidade_id", nullable = false)
+    private Unidade unidade;
+
     private LocalDateTime dataPedido = LocalDateTime.now();
 
     @Enumerated(EnumType.STRING)
@@ -38,7 +42,7 @@ public class Pedido {
     private FormaPagamento formaPagamento;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false) // Exigência do Guia da UNINTER
+    @Column(nullable = false)
     private CanalPedido canalPedido;
 
     private BigDecimal valorTotal = BigDecimal.ZERO;

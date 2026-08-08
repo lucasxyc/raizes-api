@@ -7,25 +7,23 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "estoques")
+@Table(name = "unidades")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Estoque {
+public class Unidade {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "produto_id", nullable = false)
-    private Produto produto;
-
-    @ManyToOne
-    @JoinColumn(name = "unidade_id", nullable = false)
-    private Unidade unidade;
+    @Column(nullable = false)
+    private String nome;
 
     @Column(nullable = false)
-    private Integer quantidadeDisponivel;
+    private String endereco;
+
+    @Column(nullable = false)
+    private Boolean ativa;
 }

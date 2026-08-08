@@ -12,8 +12,10 @@ import br.com.raizes.raizesapi.repository.ClienteRepository;
 import br.com.raizes.raizesapi.repository.PagamentoRepository;
 import br.com.raizes.raizesapi.repository.PedidoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,10 +31,10 @@ public class PagamentoService {
     @Transactional
     public PagamentoResponse processarPagamento(PagamentoRequest request) {
         Pedido pedido = pedidoRepository.findById(request.pedidoId())
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado para processar o pagamento."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado para processar o pagamento."));
 
         if (pedido.getStatus() != StatusPedido.AGUARDANDO_PAGAMENTO) {
-            throw new RuntimeException("Este pedido não está aguardando pagamento ou já foi processado.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Este pedido já foi processado ou não está aguardando pagamento.");
         }
 
         Pagamento pagamento = new Pagamento();
@@ -44,8 +46,9 @@ public class PagamentoService {
             pagamento.setStatus(StatusPagamento.APROVADO);
             pedido.setStatus(StatusPedido.EM_PREPARO);
 
+            // CORREÇÃO: Repassa o ID do produto, o ID da unidade vinculada ao pedido e a quantidade
             for (ItemPedido item : pedido.getItens()) {
-                estoqueService.baixarEstoque(item.getProduto().getId(), item.getQuantidade());
+                estoqueService.baixarEstoque(item.getProduto().getId(), pedido.getUnidade().getId(), item.getQuantidade());
             }
 
             Cliente cliente = pedido.getCliente();
@@ -73,7 +76,7 @@ public class PagamentoService {
 
     public PagamentoResponse buscarPorId(Long id) {
         Pagamento pagamento = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Registro de pagamento não localizado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Registro de pagamento não localizado."));
         return converterParaResponse(pagamento);
     }
 

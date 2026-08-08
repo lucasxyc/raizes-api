@@ -4,5 +4,7 @@ public record EstoqueResponse(
         Long id,
         Long produtoId,
         String nomeProduto,
+        Long unidadeId,
+        String nomeUnidade,
         Integer quantidadeDisponivel
 ) { }

@@ -4,11 +4,15 @@ import br.com.raizes.raizesapi.dto.estoque.EstoqueRequest;
 import br.com.raizes.raizesapi.dto.estoque.EstoqueResponse;
 import br.com.raizes.raizesapi.entity.Estoque;
 import br.com.raizes.raizesapi.entity.Produto;
+import br.com.raizes.raizesapi.entity.Unidade;
 import br.com.raizes.raizesapi.repository.EstoqueRepository;
 import br.com.raizes.raizesapi.repository.ProdutoRepository;
+import br.com.raizes.raizesapi.repository.UnidadeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +23,7 @@ public class EstoqueService {
 
     private final EstoqueRepository repository;
     private final ProdutoRepository produtoRepository;
+    private final UnidadeRepository unidadeRepository;
 
     public List<EstoqueResponse> listar() {
         return repository.findAll()
@@ -29,22 +34,25 @@ public class EstoqueService {
 
     public EstoqueResponse buscarPorId(Long id) {
         Estoque estoque = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Item de estoque não encontrado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item de estoque não encontrado."));
         return converterParaResponse(estoque);
     }
 
     @Transactional
     public EstoqueResponse cadastrar(EstoqueRequest request) {
         Produto produto = produtoRepository.findById(request.produtoId())
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado."));
 
-        // Evita duplicar estoque para o mesmo produto
-        if(repository.findByProdutoId(request.produtoId()).isPresent()) {
-            throw new RuntimeException("Este produto já possui um registro de estoque.");
+        Unidade unidade = unidadeRepository.findById(request.unidadeId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Unidade não encontrada."));
+
+        if (repository.findByProdutoIdAndUnidadeId(request.produtoId(), request.unidadeId()).isPresent()) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Este produto já possui um registro de estoque cadastrado nesta unidade.");
         }
 
         Estoque estoque = new Estoque();
         estoque.setProduto(produto);
+        estoque.setUnidade(unidade);
         estoque.setQuantidadeDisponivel(request.quantidade());
 
         Estoque estoqueSalvo = repository.save(estoque);
@@ -54,7 +62,7 @@ public class EstoqueService {
     @Transactional
     public EstoqueResponse atualizar(Long id, EstoqueRequest request) {
         Estoque estoque = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Item de estoque não encontrado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Item de estoque não encontrado."));
 
         estoque.setQuantidadeDisponivel(request.quantidade());
 
@@ -65,26 +73,25 @@ public class EstoqueService {
     @Transactional
     public void remover(Long id) {
         if (!repository.existsById(id)) {
-            throw new RuntimeException("Item de estoque não encontrado.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Item de estoque não encontrado.");
         }
         repository.deleteById(id);
     }
 
-    // Regras de Negócio específicas para a Etapa de Pedidos
 
-    public boolean verificarDisponibilidade(Long produtoId, Integer quantidade) {
-        Estoque estoque = repository.findByProdutoId(produtoId)
-                .orElseThrow(() -> new RuntimeException("Estoque não localizado para este produto."));
+    public boolean verificarDisponibilidade(Long produtoId, Long unidadeId, Integer quantidade) {
+        Estoque estoque = repository.findByProdutoIdAndUnidadeId(produtoId, unidadeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Estoque não localizado para este produto nesta unidade."));
         return estoque.getQuantidadeDisponivel() >= quantidade;
     }
 
     @Transactional
-    public void baixarEstoque(Long produtoId, Integer quantidade) {
-        Estoque estoque = repository.findByProdutoId(produtoId)
-                .orElseThrow(() -> new RuntimeException("Estoque não localizado para este produto."));
+    public void baixarEstoque(Long produtoId, Long unidadeId, Integer quantidade) {
+        Estoque estoque = repository.findByProdutoIdAndUnidadeId(produtoId, unidadeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Estoque não localizado para este produto nesta unidade."));
 
         if (estoque.getQuantidadeDisponivel() < quantidade) {
-            throw new RuntimeException("Quantidade em estoque insuficiente para baixa.");
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Quantidade em estoque insuficiente para baixa.");
         }
 
         estoque.setQuantidadeDisponivel(estoque.getQuantidadeDisponivel() - quantidade);
@@ -92,9 +99,9 @@ public class EstoqueService {
     }
 
     @Transactional
-    public void reporEstoque(Long produtoId, Integer quantidade) {
-        Estoque estoque = repository.findByProdutoId(produtoId)
-                .orElseThrow(() -> new RuntimeException("Estoque não localizado para este produto."));
+    public void reporEstoque(Long produtoId, Long unidadeId, Integer quantidade) {
+        Estoque estoque = repository.findByProdutoIdAndUnidadeId(produtoId, unidadeId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Estoque não localizado para este produto nesta unidade."));
 
         estoque.setQuantidadeDisponivel(estoque.getQuantidadeDisponivel() + quantidade);
         repository.save(estoque);
@@ -105,6 +112,8 @@ public class EstoqueService {
                 estoque.getId(),
                 estoque.getProduto().getId(),
                 estoque.getProduto().getNome(),
+                estoque.getUnidade().getId(),
+                estoque.getUnidade().getNome(),
                 estoque.getQuantidadeDisponivel()
         );
     }

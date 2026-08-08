@@ -11,6 +11,9 @@ public record PedidoRequest(
         @NotNull(message = "O ID do cliente é obrigatório.")
         Long clienteId,
 
+        @NotNull(message = "O ID da unidade é obrigatório.")
+        Long unidadeId,
+
         @NotNull(message = "A forma de pagamento é obrigatória.")
         FormaPagamento formaPagamento,
 

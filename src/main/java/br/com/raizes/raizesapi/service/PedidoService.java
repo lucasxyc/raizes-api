@@ -5,8 +5,10 @@ import br.com.raizes.raizesapi.entity.*;
 import br.com.raizes.raizesapi.enums.StatusPedido;
 import br.com.raizes.raizesapi.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,45 +21,45 @@ public class PedidoService {
     private final PedidoRepository repository;
     private final ClienteRepository clienteRepository;
     private final ProdutoRepository produtoRepository;
+    private final UnidadeRepository unidadeRepository;
     private final EstoqueService estoqueService;
 
     @Transactional
     public PedidoResponse criarPedido(PedidoRequest request) {
-        // Validação obrigatória exigida pelo guia da UNINTER
         if (request.canalPedido() == null) {
-            throw new IllegalArgumentException("O campo canalPedido é obrigatório.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O campo canalPedido é obrigatório.");
         }
 
         Cliente cliente = clienteRepository.findById(request.clienteId())
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
+
+        Unidade unidade = unidadeRepository.findById(request.unidadeId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Unidade não encontrada."));
 
         if (request.itens() == null || request.itens().isEmpty()) {
-            throw new RuntimeException("O pedido deve conter pelo menos um item.");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "O pedido deve conter pelo menos um item.");
         }
 
-        // Criando a instância do Pedido
         Pedido pedido = new Pedido();
         pedido.setCliente(cliente);
+        pedido.setUnidade(unidade);
         pedido.setFormaPagamento(request.formaPagamento());
         pedido.setCanalPedido(request.canalPedido());
-
-        // Inicializa explicitamente a lista para garantir compatibilidade
         pedido.setItens(new ArrayList<>());
 
         BigDecimal valorTotalPedido = BigDecimal.ZERO;
 
         for (ItemPedidoRequest itemReq : request.itens()) {
             if (itemReq.quantidade() <= 0) {
-                throw new RuntimeException("A quantidade do produto deve ser maior que zero.");
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "A quantidade do produto deve ser maior que zero.");
             }
 
             Produto produto = produtoRepository.findById(itemReq.produtoId())
-                    .orElseThrow(() -> new RuntimeException("Produto não encontrado."));
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado."));
 
-            // Validação de estoque construída na Etapa 9
-            boolean temEstoque = estoqueService.verificarDisponibilidade(produto.getId(), itemReq.quantidade());
+            boolean temEstoque = estoqueService.verificarDisponibilidade(produto.getId(), unidade.getId(), itemReq.quantidade());
             if (!temEstoque) {
-                throw new RuntimeException("Estoque insuficiente para o produto: " + produto.getNome());
+                throw new ResponseStatusException(HttpStatus.CONFLICT, "Estoque insuficiente para o produto: " + produto.getNome() + " na unidade: " + unidade.getNome());
             }
 
             ItemPedido itemPedido = new ItemPedido();
@@ -86,7 +88,7 @@ public class PedidoService {
 
     public PedidoResponse buscarPorId(Long id) {
         Pedido pedido = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado."));
         return converterParaResponse(pedido);
     }
 
@@ -97,7 +99,7 @@ public class PedidoService {
     @Transactional
     public PedidoResponse atualizarStatus(Long id, StatusPedido novoStatus) {
         Pedido pedido = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado."));
         pedido.setStatus(novoStatus);
         return converterParaResponse(repository.save(pedido));
     }
@@ -105,7 +107,7 @@ public class PedidoService {
     @Transactional
     public void cancelarPedido(Long id) {
         Pedido pedido = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Pedido não encontrado."));
         pedido.setStatus(StatusPedido.CANCELADO);
         repository.save(pedido);
     }
