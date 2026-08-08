@@ -62,4 +62,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
+
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<Map<String, Object>> handleAccessDenied(org.springframework.security.access.AccessDeniedException ex, jakarta.servlet.http.HttpServletRequest request) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", java.time.Instant.now().toString());
+        body.put("error", "ACESSO_NEGADO");
+        body.put("message", "Você não tem permissão para acessar este recurso.");
+        body.put("details", List.of());
+        body.put("path", request.getRequestURI());
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(body);
+    }
+
 }

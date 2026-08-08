@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -36,6 +37,7 @@ public class ProdutoController {
     }
 
     // POST /produtos -> Cadastra um novo produto informando nome, descrição e preço básico
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @PostMapping
     @Operation(summary = "Cadastrar produto", description = "Insere uma nova opção de item ou insumo no catálogo de produtos geral")
     public ResponseEntity<Produto> salvar(@Valid @RequestBody Produto produto) {
@@ -44,6 +46,7 @@ public class ProdutoController {
     }
 
     // PUT /produtos/{id} -> Atualiza o preço ou os dados cadastrais de um produto existente
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @PutMapping("/{id}")
     @Operation(summary = "Atualizar dados do produto", description = "Atualiza de forma integral as propriedades cadastrais ou precificação de um produto")
     public ResponseEntity<Produto> atualizar(@PathVariable Long id, @Valid @RequestBody Produto produto) {
@@ -52,6 +55,7 @@ public class ProdutoController {
     }
 
     // DELETE /produtos/{id} -> Remove permanentemente o registro do produto do catálogo
+    @PreAuthorize("hasAnyRole('ADMIN', 'GERENTE')")
     @DeleteMapping("/{id}")
     @Operation(summary = "Remover produto", description = "Exclui em definitivo um produto do catálogo físico do banco relacional")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
