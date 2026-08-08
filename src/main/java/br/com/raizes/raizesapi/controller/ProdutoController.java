@@ -23,11 +23,12 @@ public class ProdutoController {
     // GET /produtos -> Lista todos os produtos cadastrados no cardápio geral
     @GetMapping
     @Operation(summary = "Listar cardápio", description = "Retorna todos os itens gastronômicos e bebidas ativos e cadastrados no catálogo")
-    public ResponseEntity<List<Produto>> listarTodos() {
-        List<Produto> produtos = produtoService.listarTodos();
-        return ResponseEntity.ok(produtos);
+    public ResponseEntity<org.springframework.data.domain.Page<Produto>> listarTodos(
+            @org.springframework.data.web.PageableDefault(size = 10, sort = "id") org.springframework.data.domain.Pageable pageable
+    ) {
+        return ResponseEntity.ok(produtoService.listarTodos(pageable));
     }
-
+    
     // GET /produtos/{id} -> Busca as informações detalhadas e o preço de um produto pelo ID
     @GetMapping("/{id}")
     @Operation(summary = "Buscar produto por ID", description = "Recupera os detalhes cadastrais e o valor em precificação técnica de um produto específico")

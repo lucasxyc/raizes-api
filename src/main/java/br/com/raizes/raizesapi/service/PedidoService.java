@@ -82,8 +82,14 @@ public class PedidoService {
         return converterParaResponse(pedidoSalvo);
     }
 
-    public List<PedidoResponse> listar() {
-        return repository.findAll().stream().map(this::converterParaResponse).collect(Collectors.toList());
+    public org.springframework.data.domain.Page<PedidoResponse> listarPaginado(
+            br.com.raizes.raizesapi.enums.CanalPedido canalPedido,
+            org.springframework.data.domain.Pageable pageable
+    ) {
+        if (canalPedido != null) {
+            return repository.findByCanalPedido(canalPedido, pageable).map(this::converterParaResponse);
+        }
+        return repository.findAll(pageable).map(this::converterParaResponse);
     }
 
     public PedidoResponse buscarPorId(Long id) {
@@ -131,15 +137,5 @@ public class PedidoService {
                 pedido.getCanalPedido(),
                 itensResponse
         );
-
-
     }
-
-    public List<PedidoResponse> listarPorCanal(br.com.raizes.raizesapi.enums.CanalPedido canalPedido) {
-        return repository.findByCanalPedido(canalPedido)
-                .stream()
-                .map(this::converterParaResponse)
-                .collect(Collectors.toList());
-    }
-
 }

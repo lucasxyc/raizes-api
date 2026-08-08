@@ -31,15 +31,14 @@ public class PedidoController {
 
     // GET /pedidos -> Lista todos os pedidos cadastrados no sistema ou filtra opcionalmente por canal de venda
     @GetMapping
-    @Operation(summary = "Listar todos os pedidos", description = "Retorna uma listagem completa de todos os pedidos efetuados ou filtrados por canal de venda (ex: ?canalPedido=TOTEM)")
-    public ResponseEntity<List<PedidoResponse>> listar(
-            @RequestParam(required = false) CanalPedido canalPedido
+    @Operation(summary = "Listar todos os pedidos", description = "Retorna o histórico geral paginado ou filtrado combinadamente por canal de venda")
+    public ResponseEntity<org.springframework.data.domain.Page<br.com.raizes.raizesapi.dto.pedido.PedidoResponse>> listar(
+            @RequestParam(required = false) br.com.raizes.raizesapi.enums.CanalPedido canalPedido,
+            @org.springframework.data.web.PageableDefault(size = 10, sort = "id") org.springframework.data.domain.Pageable pageable
     ) {
-        if (canalPedido != null) {
-            return ResponseEntity.ok(service.listarPorCanal(canalPedido));
-        }
-        return ResponseEntity.ok(service.listar());
+        return ResponseEntity.ok(service.listarPaginado(canalPedido, pageable));
     }
+
 
     // GET /pedidos/{id} -> Busca os detalhes de um pedido específico pelo seu ID
     @GetMapping("/{id}")

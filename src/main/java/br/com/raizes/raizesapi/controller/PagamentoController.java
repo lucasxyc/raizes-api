@@ -29,9 +29,11 @@ public class PagamentoController {
 
     // GET /pagamentos -> Lista o histórico de todas as tentativas e transações de pagamentos
     @GetMapping
-    @Operation(summary = "Listar pagamentos", description = "Recupera o histórico completo de transações financeiras e tentativas de pagamento registradas")
-    public ResponseEntity<List<PagamentoResponse>> listar() {
-        return ResponseEntity.ok(service.listar());
+    @Operation(summary = "Listar pagamentos", description = "Recupera o histórico completo de transações financeiras de forma paginada")
+    public ResponseEntity<org.springframework.data.domain.Page<br.com.raizes.raizesapi.dto.pagamento.PagamentoResponse>> listar(
+            @org.springframework.data.web.PageableDefault(size = 10, sort = "id") org.springframework.data.domain.Pageable pageable
+    ) {
+        return ResponseEntity.ok(service.listar(pageable));
     }
 
     // GET /pagamentos/{id} -> Busca os detalhes de uma transação específica pelo ID do pagamento

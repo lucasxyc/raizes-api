@@ -15,9 +15,10 @@ public class ProdutoService {
         this.produtoRepository = produtoRepository;
     }
 
-    public List<Produto> listarTodos() {
-        return produtoRepository.findAll();
+    public org.springframework.data.domain.Page<Produto> listarTodos(org.springframework.data.domain.Pageable pageable) {
+        return produtoRepository.findAll(pageable);
     }
+
 
     public Produto buscarPorId(Long id) {
         return produtoRepository.findById(id)

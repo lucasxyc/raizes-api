@@ -1,7 +1,6 @@
 package br.com.raizes.raizesapi.security.config;
 
 import br.com.raizes.raizesapi.entity.Usuario;
-import br.com.raizes.raizesapi.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

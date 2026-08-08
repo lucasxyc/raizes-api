@@ -5,9 +5,9 @@ import br.com.raizes.raizesapi.dto.cliente.ClienteResponse;
 import br.com.raizes.raizesapi.entity.Cliente;
 import br.com.raizes.raizesapi.repository.ClienteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -15,17 +15,13 @@ public class ClienteService {
 
     private final ClienteRepository repository;
 
-    public List<ClienteResponse> listar() {
-        return repository.findAll()
-                .stream()
-                .map(this::converterParaResponse)
-                .collect(Collectors.toList());
+    public org.springframework.data.domain.Page<ClienteResponse> listar(org.springframework.data.domain.Pageable pageable) {
+        return repository.findAll(pageable).map(this::converterParaResponse);
     }
 
     public ClienteResponse buscarPorId(Long id) {
         Cliente cliente = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
-
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
         return converterParaResponse(cliente);
     }
 
@@ -42,7 +38,7 @@ public class ClienteService {
 
     public ClienteResponse atualizar(Long id, ClienteRequest request) {
         Cliente cliente = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado."));
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado."));
 
         cliente.setNome(request.nome());
         cliente.setEmail(request.email());
@@ -55,12 +51,11 @@ public class ClienteService {
 
     public void deletar(Long id) {
         if (!repository.existsById(id)) {
-            throw new RuntimeException("Cliente não encontrado.");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Cliente não encontrado.");
         }
         repository.deleteById(id);
     }
 
-    // Método auxiliar
     private ClienteResponse converterParaResponse(Cliente cliente) {
         return new ClienteResponse(
                 cliente.getId(),
@@ -71,5 +66,4 @@ public class ClienteService {
                 cliente.getConsentimentoLGPD()
         );
     }
-
 }

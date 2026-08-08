@@ -23,10 +23,13 @@ public class UnidadeController {
 
     // GET /unidades -> Lista todas as unidades cadastras no sistema
     @GetMapping
-    @Operation(summary = "Listar filiais", description = "Exibe uma listagem completa das unidades físicas operacionais da rede")
-    public ResponseEntity<List<UnidadeResponse>> listar() {
-        return ResponseEntity.ok(service.listar());
+    @Operation(summary = "Listar filiais", description = "Exibe uma listagem paginada das unidades físicas operacionais da rede")
+    public ResponseEntity<org.springframework.data.domain.Page<br.com.raizes.raizesapi.dto.unidade.UnidadeResponse>> listar(
+            @org.springframework.data.web.PageableDefault(size = 10, sort = "id") org.springframework.data.domain.Pageable pageable
+    ) {
+        return ResponseEntity.ok(service.listar(pageable));
     }
+
 
     // GET /unidades/{id} -> Busca os detalhes informativos de uma filial
     @GetMapping("/{id}")

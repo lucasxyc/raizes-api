@@ -22,10 +22,13 @@ public class EstoqueController {
     private final EstoqueService service;
 
     @GetMapping
-    @Operation(summary = "Listar estoque geral", description = "Exibe o saldo volumétrico de todas as unidades")
-    public ResponseEntity<List<EstoqueResponse>> listar() {
-        return ResponseEntity.ok(service.listar());
+    @Operation(summary = "Listar estoque geral", description = "Exibe o saldo volumétrico de todas as unidades de forma paginada")
+    public ResponseEntity<org.springframework.data.domain.Page<br.com.raizes.raizesapi.dto.estoque.EstoqueResponse>> listar(
+            @org.springframework.data.web.PageableDefault(size = 10, sort = "id") org.springframework.data.domain.Pageable pageable
+    ) {
+        return ResponseEntity.ok(service.listar(pageable));
     }
+
 
     @GetMapping("/{id}")
     @Operation(summary = "Buscar estoque por ID", description = "Recupera os detalhes de um item físico específico")

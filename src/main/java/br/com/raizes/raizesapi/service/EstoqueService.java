@@ -25,12 +25,10 @@ public class EstoqueService {
     private final ProdutoRepository produtoRepository;
     private final UnidadeRepository unidadeRepository;
 
-    public List<EstoqueResponse> listar() {
-        return repository.findAll()
-                .stream()
-                .map(this::converterParaResponse)
-                .collect(Collectors.toList());
+    public org.springframework.data.domain.Page<br.com.raizes.raizesapi.dto.estoque.EstoqueResponse> listar(org.springframework.data.domain.Pageable pageable) {
+        return repository.findAll(pageable).map(this::converterParaResponse);
     }
+
 
     public EstoqueResponse buscarPorId(Long id) {
         Estoque estoque = repository.findById(id)

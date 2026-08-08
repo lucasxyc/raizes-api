@@ -46,7 +46,6 @@ public class PagamentoService {
             pagamento.setStatus(StatusPagamento.APROVADO);
             pedido.setStatus(StatusPedido.EM_PREPARO);
 
-            // CORREÇÃO: Repassa o ID do produto, o ID da unidade vinculada ao pedido e a quantidade
             for (ItemPedido item : pedido.getItens()) {
                 estoqueService.baixarEstoque(item.getProduto().getId(), pedido.getUnidade().getId(), item.getQuantidade());
             }
@@ -67,12 +66,10 @@ public class PagamentoService {
         return converterParaResponse(pagamentoSalvo);
     }
 
-    public List<PagamentoResponse> listar() {
-        return repository.findAll()
-                .stream()
-                .map(this::converterParaResponse)
-                .collect(Collectors.toList());
+    public org.springframework.data.domain.Page<br.com.raizes.raizesapi.dto.pagamento.PagamentoResponse> listar(org.springframework.data.domain.Pageable pageable) {
+        return repository.findAll(pageable).map(this::converterParaResponse);
     }
+
 
     public PagamentoResponse buscarPorId(Long id) {
         Pagamento pagamento = repository.findById(id)

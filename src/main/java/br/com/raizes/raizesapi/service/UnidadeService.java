@@ -17,11 +17,10 @@ public class UnidadeService {
 
     private final UnidadeRepository repository;
 
-    public List<UnidadeResponse> listar() {
-        return repository.findAll().stream()
-                .map(this::converterParaResponse)
-                .collect(Collectors.toList());
+    public org.springframework.data.domain.Page<br.com.raizes.raizesapi.dto.unidade.UnidadeResponse> listar(org.springframework.data.domain.Pageable pageable) {
+        return repository.findAll(pageable).map(this::converterParaResponse);
     }
+
 
     public UnidadeResponse buscarPorId(Long id) {
         Unidade unidade = repository.findById(id)

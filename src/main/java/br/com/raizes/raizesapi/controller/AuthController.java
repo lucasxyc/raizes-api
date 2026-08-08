@@ -3,7 +3,7 @@ package br.com.raizes.raizesapi.controller;
 import br.com.raizes.raizesapi.dto.auth.LoginRequest;
 import br.com.raizes.raizesapi.dto.auth.LoginResponse;
 import br.com.raizes.raizesapi.dto.auth.RegisterRequest;
-import br.com.raizes.raizesapi.service.AuthService;
+import br.com.raizes.raizesapi.security.config.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

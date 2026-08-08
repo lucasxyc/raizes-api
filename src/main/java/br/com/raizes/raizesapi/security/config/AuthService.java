@@ -1,4 +1,4 @@
-package br.com.raizes.raizesapi.service;
+package br.com.raizes.raizesapi.security.config;
 
 import br.com.raizes.raizesapi.dto.auth.LoginRequest;
 import br.com.raizes.raizesapi.dto.auth.RegisterRequest;

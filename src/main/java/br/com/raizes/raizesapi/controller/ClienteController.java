@@ -22,10 +22,13 @@ public class ClienteController {
 
     // GET /clientes -> Lista todos os clientes cadastrados com suas informações básicas
     @GetMapping
-    @Operation(summary = "Listar clientes", description = "Retorna uma lista contendo todos os clientes cadastrados no banco de dados")
-    public ResponseEntity<List<ClienteResponse>> listar() {
-        return ResponseEntity.ok(service.listar());
+    @Operation(summary = "Listar clientes", description = "Retorna uma lista paginada contendo todos os clientes cadastrados")
+    public ResponseEntity<org.springframework.data.domain.Page<br.com.raizes.raizesapi.dto.cliente.ClienteResponse>> listar(
+            @org.springframework.data.web.PageableDefault(size = 10, sort = "id") org.springframework.data.domain.Pageable pageable
+    ) {
+        return ResponseEntity.ok(service.listar(pageable));
     }
+
 
     // GET /clientes/{id} -> Busca os detalhes e o saldo de pontos de um cliente específico pelo ID
     @GetMapping("/{id}")
